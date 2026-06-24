@@ -31,7 +31,7 @@ export const findById = async ({
   if (options.populate) doc.populate(options.populate);
   if (options.lean) doc.lean();
 
-  return await doc.excute();
+  return await doc.exec();
 };
 
 export const find = async ({
@@ -46,7 +46,7 @@ export const find = async ({
   if (options.lean) doc.lean();
   if (options?.skip) doc.skip(options.skip);
   if (options?.limit) doc.limit(options.limit);
-  return await doc.excute();
+  return await doc.exec();
 };
 
 export const updateOne = async ({

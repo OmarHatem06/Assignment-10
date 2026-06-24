@@ -10,9 +10,9 @@ import {
   NotFoundHandlerException,
 } from "./src/Utils/response/error.response.js";
 import ConnectDB from "./src/DB/connection.js";
-
+import cors from "cors";
 export const bootstrap = async (app, express) => {
-  app.use(express.json());
+  app.use(express.json(), cors());
   app.use("/users", usersrouter);
   await ConnectDB();
   app.use("/messages", messagesrouter);

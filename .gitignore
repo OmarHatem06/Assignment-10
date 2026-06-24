@@ -1,2 +1,4 @@
 node_modules/
 src/Configs
+package-lock.json
+package.json

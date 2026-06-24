@@ -1,8 +1,8 @@
 import crypto from "crypto";
-import { Secret_Key } from "../../Configs/config.service.js";
+import { ENCRYPTION_SECRET_KEY } from "../../Configs/config.service.js";
 
 const IV_Length = 16;
-const Encryption_Secret_Key = Buffer.from(Secret_Key);
+const Encryption_Secret_Key = Buffer.from(ENCRYPTION_SECRET_KEY);
 export const encryption = (text) => {
   const iv = crypto.randomBytes(IV_Length);
   const cipher = crypto.createCipheriv(
