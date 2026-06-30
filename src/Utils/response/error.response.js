@@ -55,9 +55,12 @@ export const NotFoundHandlerException = (
   return ErrorResponse({ status: 404, message, extra });
 };
 
-export const GlobalErrorHandler = (err, req, res, next) => {
-  const status = err.status ?? 500;
-  return res
-    .status(Number(status))
-    .json({ message: err.message, stack: err.stack, status });
+export const GlobalErrorHandler = (error, req, res, next) => {
+  const status = error.status ?? 500;
+  return res.status(Number(status)).json({
+    message: error.message,
+    stack: error.stack,
+    status,
+    extra: error.extra,
+  });
 };

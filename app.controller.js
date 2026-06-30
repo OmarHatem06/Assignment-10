@@ -3,7 +3,7 @@ import {
   messagesrouter,
   authrouter,
 } from "./src/modules/index.js";
-
+import path from "path";
 import { successResponse } from "./src/Utils/response/success.response.js";
 import {
   GlobalErrorHandler,
@@ -14,6 +14,7 @@ import cors from "cors";
 export const bootstrap = async (app, express) => {
   app.use(express.json(), cors());
   app.use("/users", usersrouter);
+  app.use("/uploads", express.static(path.resolve("./src/uploads")));
   await ConnectDB();
   app.use("/messages", messagesrouter);
   app.use("/auth", authrouter);

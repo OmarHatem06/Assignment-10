@@ -22,13 +22,26 @@ import {
 } from "../../Utils/tokens/tokens.js";
 import { OAuth2Client } from "google-auth-library";
 import { CLIENT_ID } from "../../Configs/config.service.js";
-import { ProviderEnum } from "../../Utils/enums/user.enum.js";
+import {
+  GenderEnum,
+  LogoutEnum,
+  ProviderEnum,
+  RoleEnum,
+} from "../../Utils/enums/user.enum.js";
+import { signupSchema } from "./auth.validation.js";
+import TokensModel from "../../DB/Models/tokens.model.js";
+
 export const signup = async (req, res) => {
   const { firstname, lastname, email, password, phone } = req.body;
+  //const validationResults = signupSchema.validate(req.body, {
+  //abortEarly: false,
+  // });
+  //if (validationResults.error)
+  //throw BadRequestException("validation error", validationResults.error);
 
   const existemail = await findOne({ model: UserModel, filter: { email } });
   if (existemail) {
-    throw ConflictException();
+    throw ConflictException("user already exists");
   }
 
   const hashedpassword = await generateHash({
@@ -146,7 +159,29 @@ export const loginwithgoogle = async (req, res) => {
   successResponse({
     res,
     statuscode: 201,
-    message: "loggedin successfully",
+    message: "user created successfully",
     data: { credintials },
   });
+};
+
+export const logout = async (req, res) => {
+  const { flag } = req.body;
+
+  switch (flag) {
+    case LogoutEnum.LOGOUT:
+      await create({
+        model: TokensModel,
+        data: {
+          jti: req.decoded.jti,
+          userId: req.user._id,
+          expiresIn: Date.now() - req.decoded.exp,
+        },
+      });
+
+      return successResponse({
+        res,
+        message: "loggedOut Successfuly",
+        statuscode: 201,
+      });
+  }
 };

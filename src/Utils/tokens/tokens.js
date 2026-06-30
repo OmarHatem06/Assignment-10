@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
 import {
   ACCESS_TOKEN_ADMIN_KEY,
   ACCESS_TOKEN_ADMIN_EXPIRE_IN,
@@ -40,7 +41,7 @@ export const getNewloginCredintials = async (user) => {
     signatureLevel:
       user.role != RoleEnum.ADMIN ? signatureEnum.USER : signatureEnum.ADMIN,
   });
-
+  const jwtid = uuidv4();
   const accessToken = await generateToken({
     payload: { id: user._id },
     secretKey: signature.accessSignature,
@@ -49,6 +50,7 @@ export const getNewloginCredintials = async (user) => {
         user.role != RoleEnum.ADMIN
           ? ACCESS_TOKEN_USER_EXPIRE_IN
           : ACCESS_TOKEN_ADMIN_EXPIRE_IN,
+      jwtid,
     },
   });
   const refreshToken = await generateToken({
@@ -59,6 +61,7 @@ export const getNewloginCredintials = async (user) => {
         user.role != RoleEnum.ADMIN
           ? REFRESH_TOKEN_USER_EXPIRE_IN
           : REFRESH_TOKEN_ADMIN_EXPIRE_IN,
+      jwtid,
     },
   });
 

@@ -63,7 +63,7 @@ export const findOneandUpdate = async ({
   update = {},
   options = {},
 } = {}) => {
-  return await model.findOneandUpdate(
+  return await model.findOneAndUpdate(
     filter,
     { ...update, $inc: { _v: 1 } },
     { ...options, new: true, runValidators: true },
@@ -76,7 +76,7 @@ export const findByIdandUpdate = async ({
   update = {},
   options = {},
 } = {}) => {
-  return await model.findOneandUpdate(
+  return await model.findByIdAndUpdate(
     id,
     { ...update, $inc: { _v: 1 } },
     { ...options, new: true, runValidators: true },
@@ -88,5 +88,5 @@ export const deleteOne = async ({ model, filter } = {}) => {
 };
 
 export const findOneandDelete = async ({ model, filter } = {}) => {
-  return await model.findOneandDelete(filter);
+  return await model.findOneAndDelete(filter);
 };

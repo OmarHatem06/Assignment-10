@@ -30,11 +30,13 @@ const userSchema = new mongoose.Schema(
         return this.provider == ProviderEnum.SYSTEM;
       },
     },
+    confirmpassword: { type: String },
 
     DOB: { type: Date },
     phone: { type: String },
     confirmemail: { type: Date },
     profilepic: { type: String },
+    coverimage: [String],
     gender: {
       type: Number,
       enum: Object.values(GenderEnum),

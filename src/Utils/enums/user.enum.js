@@ -23,3 +23,8 @@ export const tokenTypeEnum = {
   ACCESS: 0,
   REFRESH: 1,
 };
+
+export const LogoutEnum = {
+  LOGOUT: "logout",
+  LOGOUTALL: "logoutall",
+};

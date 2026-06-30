@@ -8,7 +8,7 @@ export const decodedToken = async ({
   authorization,
   tokentype = tokenTypeEnum.ACCESS,
 }) => {
-  const [Bearer, token] = authorization.split(" ") || [];
+  const [Bearer, token] = authorization?.split(" ") || [];
 
   let signature = await getSignature({
     signatureLevel:
