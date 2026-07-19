@@ -20,6 +20,6 @@ const TokenSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-TokenSchema.index("expiresIn", { expireAfterSeconds: 1000 });
+TokenSchema.index({ expiresIn: 1 }, { expireAfterSeconds: 0 });
 export const TokensModel = mongoose.model("Tokens", TokenSchema);
 export default TokensModel;

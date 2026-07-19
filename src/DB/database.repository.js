@@ -22,11 +22,11 @@ export const create = async ({
 
 export const findById = async ({
   model,
-  id,
+  _id,
   select = "",
   options = {},
 } = {}) => {
-  const doc = model.findById(id);
+  const doc = model.findById(_id);
   if (select.length) doc.select(select);
   if (options.populate) doc.populate(options.populate);
   if (options.lean) doc.lean();
@@ -55,9 +55,13 @@ export const updateOne = async ({
   update = {},
   options = {},
 } = {}) => {
-  return await model.updateOne(filter, { ...update, $inc: { _v: 1 } }, options);
+  return await model.updateOne(
+    filter,
+    { ...update, $inc: { __v: 1 } },
+    options,
+  );
 };
-export const findOneandUpdate = async ({
+export const findOneAndUpdate = async ({
   model,
   filter = {},
   update = {},
@@ -65,20 +69,20 @@ export const findOneandUpdate = async ({
 } = {}) => {
   return await model.findOneAndUpdate(
     filter,
-    { ...update, $inc: { _v: 1 } },
+    { ...update, $inc: { __v: 1 } },
     { ...options, new: true, runValidators: true },
   );
 };
 
-export const findByIdandUpdate = async ({
+export const findByIdAndUpdate = async ({
   model,
-  id,
+  _id,
   update = {},
   options = {},
 } = {}) => {
   return await model.findByIdAndUpdate(
-    id,
-    { ...update, $inc: { _v: 1 } },
+    _id,
+    { ...update, $inc: { __v: 1 } },
     { ...options, new: true, runValidators: true },
   );
 };
@@ -87,6 +91,6 @@ export const deleteOne = async ({ model, filter } = {}) => {
   return await model.deleteOne(filter);
 };
 
-export const findOneandDelete = async ({ model, filter } = {}) => {
+export const findOneAndDelete = async ({ model, filter } = {}) => {
   return await model.findOneAndDelete(filter);
 };

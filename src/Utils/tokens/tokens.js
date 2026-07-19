@@ -10,7 +10,7 @@ import {
   REFRESH_TOKEN_ADMIN_EXPIRE_IN,
   REFRESH_TOKEN_USER_EXPIRE_IN,
 } from "../../Configs/config.service.js";
-import { RoleEnum, signatureEnum } from "../enums/user.enum.js";
+import { CredintialEnm, RoleEnum, signatureEnum } from "../enums/user.enum.js";
 
 export const generateToken = async ({ payload, secretKey, options }) => {
   return jwt.sign(payload, secretKey, options);
@@ -36,7 +36,10 @@ export const getSignature = async ({ signatureLevel = signatureEnum.USER }) => {
   return signature;
 };
 
-export const getNewloginCredintials = async (user) => {
+export const getNewCredintials = async (
+  user,
+  goal = CredintialEnm.REGISTERING,
+) => {
   const signature = await getSignature({
     signatureLevel:
       user.role != RoleEnum.ADMIN ? signatureEnum.USER : signatureEnum.ADMIN,
@@ -53,17 +56,25 @@ export const getNewloginCredintials = async (user) => {
       jwtid,
     },
   });
-  const refreshToken = await generateToken({
-    payload: { id: user._id },
-    secretKey: signature.refreshSignature,
-    options: {
-      expiresIn:
-        user.role != RoleEnum.ADMIN
-          ? REFRESH_TOKEN_USER_EXPIRE_IN
-          : REFRESH_TOKEN_ADMIN_EXPIRE_IN,
-      jwtid,
-    },
-  });
 
-  return { accessToken, refreshToken };
+  switch (goal) {
+    case CredintialEnm.REFRESH:
+      return { accessToken };
+
+    case CredintialEnm.REGISTERING: {
+      const refreshToken = await generateToken({
+        payload: { id: user._id },
+        secretKey: signature.refreshSignature,
+        options: {
+          expiresIn:
+            user.role !== RoleEnum.ADMIN
+              ? REFRESH_TOKEN_USER_EXPIRE_IN
+              : REFRESH_TOKEN_ADMIN_EXPIRE_IN,
+          jwtid,
+        },
+      });
+
+      return { accessToken, refreshToken };
+    }
+  }
 };

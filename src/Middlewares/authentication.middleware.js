@@ -1,4 +1,5 @@
-import { findById } from "../DB/database.repository.js";
+import { findById, findOne } from "../DB/database.repository.js";
+import TokensModel from "../DB/Models/tokens.model.js";
 import UserModel from "../DB/Models/users.model.js";
 import { signatureEnum, tokenTypeEnum } from "../Utils/enums/user.enum.js";
 import { BadRequestException } from "../Utils/response/error.response.js";
@@ -27,10 +28,25 @@ export const decodedToken = async ({
         : signature.refreshSignature,
   });
 
-  const user = await findById({ model: UserModel, id: decoded.id });
+  /* const revoked = await findOne({
+    model: TokensModel,
+    filter: { jti: decoded.jti },
+  });
+  if (revoked) throw BadRequestException("token is revoked");
+*/
+  const user = await findById({ model: UserModel, _id: decoded.id });
 
-  if (!user) throw BadRequestException("user not found");
-
+  if (!user) {
+    throw BadRequestException("user not found");
+  }
+  if (tokentype === tokenTypeEnum.ACCESS) {
+    if (
+      (user.changecredintialstime?.getTime() || 0) >=
+      decoded.iat * 1000 + 1000
+    ) {
+      throw BadRequestException("token is revoked");
+    }
+  }
   return { user, decoded };
 };
 

@@ -15,7 +15,7 @@ import {
 router.get(
   "/getuser",
   authentication({ tokentype: tokenTypeEnum.ACCESS }),
-  authorization({ accessRole: [RoleEnum.ADMIN] }),
+  authorization({ accessRole: [RoleEnum.ADMIN, RoleEnum.USER] }),
   userservice.getuser,
 );
 router.patch(
@@ -39,4 +39,23 @@ router.patch(
   }).array("Attachments", 5),
 
   userservice.coverimages,
+);
+router.patch(
+  "/freeze-account{/:userid}",
+  authentication({ tokentype: tokenTypeEnum.ACCESS }),
+  authorization({ accessRole: [RoleEnum.USER, RoleEnum.ADMIN] }),
+  userservice.freeze,
+);
+router.patch(
+  "/restore-account{/:userid}",
+  authentication({ tokentype: tokenTypeEnum.ACCESS }),
+  authorization({ accessRole: [RoleEnum.USER, RoleEnum.ADMIN] }),
+  userservice.restore,
+);
+
+router.delete(
+  "/delete-account/:userid",
+  authentication({ tokentype: tokenTypeEnum.ACCESS }),
+  authorization({ accessRole: [RoleEnum.ADMIN] }),
+  userservice.deleteaccount,
 );

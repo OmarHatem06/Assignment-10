@@ -28,3 +28,8 @@ export const LogoutEnum = {
   LOGOUT: "logout",
   LOGOUTALL: "logoutall",
 };
+
+export const CredintialEnm = {
+  REFRESH: "refreshing",
+  REGISTERING: "registering",
+};

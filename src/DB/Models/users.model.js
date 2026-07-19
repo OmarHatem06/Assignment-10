@@ -26,17 +26,24 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: function () {
-        return this.provider == ProviderEnum.SYSTEM;
-      },
+      // required: function () {
+      // return this.provider == ProviderEnum.SYSTEM;
     },
     confirmpassword: { type: String },
-
+    freezedAt: { type: Date },
+    freezedBy: { type: Schema.Types.ObjectId, ref: "User" },
+    freezedByRole: { type: Number, enum: Object.values(RoleEnum) },
+    restoredBy: { type: Schema.Types.ObjectId, ref: "User" },
+    restoredAt: { type: Date },
     DOB: { type: Date },
     phone: { type: String },
     confirmemail: { type: Date },
+    confirmemailOTP: { type: String },
+    forgetPasswordOTP: { type: String },
+    forgetPasswordOTPExpires: { type: Date },
     profilepic: { type: String },
     coverimage: [String],
+    changecredintialstime: { type: Date },
     gender: {
       type: Number,
       enum: Object.values(GenderEnum),
