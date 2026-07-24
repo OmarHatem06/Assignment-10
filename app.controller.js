@@ -23,7 +23,9 @@ export const bootstrap = async (app, express) => {
   await ConnectDB();
   await redisConnection();
   logger(app, "/users", usersrouter, "access.log");
+  logger(app, "/messages", messagesrouter, "access.log");
   logger(app, "/auth", authrouter, "access.log");
+
   app.use("/users", usersrouter);
   app.use("/messages", messagesrouter);
   app.use("/auth", authrouter);

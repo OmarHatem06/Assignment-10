@@ -1,6 +1,6 @@
 import { createClient } from "redis";
 import { REDIS_URI } from "../Configs/config.service.js";
-const redisClient = createClient({
+export const redisClient = createClient({
   url: REDIS_URI,
   RESP: 2,
 });

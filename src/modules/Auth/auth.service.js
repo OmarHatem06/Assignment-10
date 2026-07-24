@@ -25,7 +25,11 @@ import {
 
 import { generateToken, getNewCredintials } from "../../Utils/tokens/tokens.js";
 import { OAuth2Client } from "google-auth-library";
-import { CLIENT_ID, USEREMAIL } from "../../Configs/config.service.js";
+import {
+  ACCESS_TOKEN_USER_EXPIRE_IN,
+  CLIENT_ID,
+  USEREMAIL,
+} from "../../Configs/config.service.js";
 import {
   CredintialEnm,
   GenderEnum,
@@ -41,6 +45,11 @@ import { stringify } from "uuid";
 import { generateOtp } from "../../Utils/OTP/OTP.js";
 import { generateOtpTemplate } from "../../Utils/emails/HTMLtemplate.js";
 import { sendEmailEvent } from "../../Utils/Events/sendEmail.event.js";
+import {
+  revokedTokenprefix,
+  SET,
+  revokedTokenkey,
+} from "../../DB/redis.service.js";
 
 export const signup = async (req, res) => {
   const { firstname, lastname, email, password, phone } = req.body;
@@ -424,4 +433,16 @@ export const sendmails = async (req, res) => {
   successResponse({ res, message: "email sent", statuscode: 200 });
 };
 
-export const changePassword = async (req, res) => {};
+export const logoutwithredis = async (req, res) => {
+  await SET({
+    key: revokedTokenkey({ userid: req.user._id, jti: req.decoded.jti }),
+    value: req.decoded.jti,
+    ttl: Number(ACCESS_TOKEN_USER_EXPIRE_IN),
+  });
+
+  return successResponse({
+    res,
+    statuscode: 201,
+    message: "loggedout successfully",
+  });
+};

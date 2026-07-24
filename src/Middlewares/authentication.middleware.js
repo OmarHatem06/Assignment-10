@@ -1,6 +1,7 @@
 import { findById, findOne } from "../DB/database.repository.js";
 import TokensModel from "../DB/Models/tokens.model.js";
 import UserModel from "../DB/Models/users.model.js";
+import { GET, revokedTokenkey } from "../DB/redis.service.js";
 import { signatureEnum, tokenTypeEnum } from "../Utils/enums/user.enum.js";
 import { BadRequestException } from "../Utils/response/error.response.js";
 import { getSignature, verifyToken } from "../Utils/tokens/tokens.js";
@@ -34,6 +35,14 @@ export const decodedToken = async ({
   });
   if (revoked) throw BadRequestException("token is revoked");
 */
+
+  const isRevoked = await GET({
+    key: revokedTokenkey({ userid: decoded.id, jti: decoded.jti }),
+  });
+  console.log(isRevoked);
+  if (isRevoked) {
+    throw BadRequestException("Token is revoked");
+  }
   const user = await findById({ model: UserModel, _id: decoded.id });
 
   if (!user) {

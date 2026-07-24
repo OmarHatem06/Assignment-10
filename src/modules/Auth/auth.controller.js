@@ -47,3 +47,9 @@ router.post(
 );
 
 router.post("/send-email", authservice.sendmails);
+
+router.post(
+  "/logout-withredis",
+  authentication({ tokentype: tokenTypeEnum.ACCESS }),
+  authservice.logoutwithredis,
+);
